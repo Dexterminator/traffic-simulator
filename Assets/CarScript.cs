@@ -29,46 +29,27 @@ public class CarScript : MonoBehaviour
         }
     }
 	
-    void FixedUpdate()
+    void Update()
     {
         Vector3 movement = new Vector3(0, 0, 0);
-        Vector3 forward = transform.forward;
-//        Vector3 positionXZ = new Vector3(transform.position.x, 0, transform.p);
         Vector3 delta = transform.position - path [currentPathObject].position;
         Debug.Log(delta);
         Debug.Log(delta.magnitude);
         Debug.Log(currentPathObject);
-        Vector3 dir = delta.normalized;
         Debug.Log("Transform forward: " + transform.forward);
-        Debug.Log("Direction of next path object: " + dir);
+        Debug.Log("Direction of next path object: " + delta);
 
-        if (delta.magnitude < 3)
+        if (delta.magnitude < 12)
             currentPathObject++;
 
-//        if (Input.GetKey(KeyCode.UpArrow))
-//        {
-//            if (forwardSpeed <= maxForwardSpeed)
-//                forwardSpeed += 0.01f;
-//        } else
-//        {
-//            if (forwardSpeed > 0)
-//                forwardSpeed -= 0.01f;
-//        }
-//        if (Input.GetKey(KeyCode.DownArrow))
-//        {
-//            if (backingSpeed <= maxBackingSpeed)
-//                backingSpeed += 0.01f;
-//        } else
-//        {
-//            if (backingSpeed > 0)
-//                backingSpeed -= 0.01f;
-//        }
-//				
-        if (Vector3.Angle(transform.forward, dir) > 15.0f)
+        float dot = Vector3.Dot(transform.forward, delta);
+
+        if (Vector3.Angle(transform.forward, delta) > 15.0f)
+        {
             transform.RotateAround(transform.position, Vector3.up, 2.0f);
-//        if (Input.GetKey(KeyCode.RightArrow))
-//            transform.RotateAround(transform.position, Vector3.up, 0.9f);
-        forwardSpeed = 0.1f;
+        } 
+
+        forwardSpeed = 0.2f;
 		
         movement = forwardSpeed * -transform.forward;
         transform.position += movement;
