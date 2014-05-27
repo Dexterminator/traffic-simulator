@@ -35,23 +35,44 @@ public class CarScript : MonoBehaviour
         Vector3 delta = transform.position - path [currentPathObject].position;
         Debug.Log(delta);
         Debug.Log(delta.magnitude);
-        Debug.Log(currentPathObject);
+        Debug.Log("currentPathObject: " + currentPathObject);
         Debug.Log("Transform forward: " + transform.forward);
         Debug.Log("Direction of next path object: " + delta);
 
-        if (delta.magnitude < 12)
+        if (delta.magnitude < 12) {
             currentPathObject++;
+        } 
+
+        if (currentPathObject > path.Count - 1) {
+            currentPathObject = 0;
+        }
 
         float dot = Vector3.Dot(transform.forward, delta);
 
-        if (Vector3.Angle(transform.forward, delta) > 15.0f)
+        if (Vector3.Angle(-transform.forward, delta) > 2.0f)
         {
-            transform.RotateAround(transform.position, Vector3.up, 2.0f);
+            if (AngleDir(-transform.forward, delta, Vector3.up) == 1)
+                transform.RotateAround(transform.position, Vector3.up, -2.0f);
+            else
+                transform.RotateAround(transform.position, Vector3.up, 2.0f);
         } 
 
         forwardSpeed = 0.2f;
 		
         movement = forwardSpeed * -transform.forward;
         transform.position += movement;
+    }
+
+    float AngleDir(Vector3 fwd, Vector3 targetDir, Vector3 up) {
+        Vector3 perp = Vector3.Cross(fwd, targetDir);
+        float dir = Vector3.Dot(perp, up);
+        
+        if (dir > 0f) {
+            return 1f;
+        } else if (dir < 0f) {
+            return -1f;
+        } else {
+            return 0f;
+        }
     }
 }
