@@ -100,7 +100,7 @@ public class CarScript : MonoBehaviour
             Debug.DrawLine(transform.position, hit.point, Color.blue);
         }
 
-        if (Physics.Raycast(transform.position, transform.forward, out hit, 100.0f))
+        if (Physics.Raycast(transform.position + heightBoost, transform.forward, out hit, 100.0f))
         {
             Debug.Log("Hit something behind the car");
             Debug.DrawLine(transform.position, hit.point, Color.yellow);
