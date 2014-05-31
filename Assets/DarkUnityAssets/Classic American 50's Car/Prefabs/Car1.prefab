@@ -311,6 +311,7 @@ MonoBehaviour:
   maxForwardSpeed: 0
   backingSpeed: 0
   maxBackingSpeed: 0
+  pathGroup: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

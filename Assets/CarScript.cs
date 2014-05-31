@@ -31,19 +31,17 @@ public class CarScript : MonoBehaviour
 	
     void Update()
     {
+        CastRays();
         Vector3 movement = new Vector3(0, 0, 0);
         Vector3 delta = transform.position - path [currentPathObject].position;
-        Debug.Log(delta);
-        Debug.Log(delta.magnitude);
-        Debug.Log("currentPathObject: " + currentPathObject);
-        Debug.Log("Transform forward: " + transform.forward);
-        Debug.Log("Direction of next path object: " + delta);
 
-        if (delta.magnitude < 12) {
+        if (delta.magnitude < 12)
+        {
             currentPathObject++;
         } 
 
-        if (currentPathObject > path.Count - 1) {
+        if (currentPathObject > path.Count - 1)
+        {
             currentPathObject = 0;
         }
 
@@ -63,16 +61,51 @@ public class CarScript : MonoBehaviour
         transform.position += movement;
     }
 
-    float AngleDir(Vector3 fwd, Vector3 targetDir, Vector3 up) {
+    float AngleDir(Vector3 fwd, Vector3 targetDir, Vector3 up)
+    {
         Vector3 perp = Vector3.Cross(fwd, targetDir);
         float dir = Vector3.Dot(perp, up);
         
-        if (dir > 0f) {
+        if (dir > 0f)
+        {
             return 1f;
-        } else if (dir < 0f) {
+        } else if (dir < 0f)
+        {
             return -1f;
-        } else {
+        } else
+        {
             return 0f;
         }
     }
+
+    void CastRays()
+    {
+        RaycastHit hit;
+        Vector3 heightBoost = new Vector3(0, 0.7f, 0);
+        if (Physics.Raycast(transform.position + heightBoost, -transform.forward, out hit, 100.0f))
+        {
+            Debug.Log("Hit something in front of car");
+            Debug.DrawLine(transform.position, hit.point, Color.white);
+        }
+
+        if (Physics.Raycast(transform.position, transform.right, out hit, 100.0f))
+        {
+            Debug.Log("Hit something to the left of the car");
+            Debug.DrawLine(transform.position, hit.point, Color.red);
+        }
+
+        if (Physics.Raycast(transform.position, -transform.right, out hit, 100.0f))
+        {
+            Debug.Log("Hit something to the right of the car");
+            Debug.DrawLine(transform.position, hit.point, Color.blue);
+        }
+
+        if (Physics.Raycast(transform.position, transform.forward, out hit, 100.0f))
+        {
+            Debug.Log("Hit something behind the car");
+            Debug.DrawLine(transform.position, hit.point, Color.yellow);
+        }
+
+    }
+
 }
