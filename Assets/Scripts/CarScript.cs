@@ -4,64 +4,100 @@ using System.Collections.Generic;
 
 public class CarScript : MonoBehaviour
 {
-    public float forwardSpeed;
-    public float maxForwardSpeed;
-    public float backingSpeed;
-    public float maxBackingSpeed;
-    public GameObject pathGroup;
-    public List<Transform> path;
-    int currentPathObject;
+    public List<GameObject> laneGroups;
+	public List<List<Transform>> lanes;
+    int currentNodeIndex;
+	int currentLaneIndex;
+	float laneChangeSpeed;
+	enum State {Normal, SwitchLanesRight, SwitchLanesLeft};
+	private State currentState;
+	Vector3 currentNode;
+	float forwardSpeed;
 	
     // Use this for initialization
     void Start()
     {
-        forwardSpeed = 0f;
-        maxForwardSpeed = 1.0f;
-        backingSpeed = 0f;
-        maxBackingSpeed = 0.5f;
-        currentPathObject = 1;
-        Component[] pathObjects = pathGroup.GetComponentsInChildren<Transform>();
-        path = new List<Transform>();
-        foreach (Transform pathChild in pathObjects)
-        {
-            if (pathChild != pathGroup.transform)
-                path.Add(pathChild);
-        }
+		laneGroups = new List<GameObject> ();
+		lanes = new List<List<Transform>> ();
+		laneChangeSpeed = 10f;
+		forwardSpeed = 0.2f;
+        currentNodeIndex = 1; //Because of reasons
+		currentLaneIndex = 0;
+		currentState = State.Normal;
+		laneGroups.Add(GameObject.Find("Lane0"));
+		laneGroups.Add(GameObject.Find("Lane1"));
+		laneGroups.Add(GameObject.Find("Lane2"));
+		laneGroups.Add(GameObject.Find("Lane3"));
+		foreach (GameObject laneGroup in laneGroups) {
+			Component[] laneObjects = laneGroup.GetComponentsInChildren<Transform> ();
+			List<Transform> lane = new List<Transform> ();
+			foreach (Transform node in laneObjects) {
+				if (node != laneGroup.transform)
+					lane.Add (node);
+			}
+			lanes.Add (lane);
+		}
+		currentNode = lanes [currentLaneIndex] [currentNodeIndex].position;
     }
-	
+
     void Update()
     {
-		if (currentPathObject == path.Count)
+		List<Transform> lane = lanes [currentLaneIndex];
+		if (currentNodeIndex == lane.Count)
 			Destroy (gameObject);
-        CastRays();
-        Vector3 movement = new Vector3(0, 0, 0);
-        Vector3 delta = transform.position - path [currentPathObject].position;
+//        CastRays();
+//		Debug.Log (State.SwitchLanesRight);
 
-        if (delta.magnitude < 5)
-        {
-            currentPathObject++;
-        } 
+		Debug.DrawLine (transform.position, currentNode);
+		Vector3 delta = MoveToPosition (currentNode);
 
-//        if (currentPathObject > path.Count - 1)
-//        {
-//            currentPathObject = 0;
-//        }
+		switch (currentState)
+		{
+		case State.Normal:
+			if (delta.magnitude < 5) {
+				currentNodeIndex++;
+				currentNode = lane [currentNodeIndex].position;
+			}
+			break;
+		case State.SwitchLanesRight:
+			if (delta.magnitude < 3) {
+				currentLaneIndex++;
+				currentNode = lanes [currentLaneIndex] [currentNodeIndex].position;
+				currentState = State.Normal;
+			}
+			break;
+		case State.SwitchLanesLeft:
+			if (delta.magnitude < 3) {
+				currentLaneIndex--;
+				currentNode = lanes [currentLaneIndex] [currentNodeIndex].position;
+				currentState = State.Normal;
+			}
+			break;
+		default:
+			Debug.Log ("Lol, no state wat");
+			break;
+		}
 
-        float dot = Vector3.Dot(transform.forward, delta);
 
-        if (Vector3.Angle(-transform.forward, delta) > 2.0f)
-        {
-            if (AngleDir(-transform.forward, delta, Vector3.up) == 1)
-                transform.RotateAround(transform.position, Vector3.up, -3.0f);
-            else
-                transform.RotateAround(transform.position, Vector3.up, 3.0f);
-        } 
 
-        forwardSpeed = 0.2f;
-		
-        movement = forwardSpeed * -transform.forward;
-        transform.position += movement;
     }
+
+	Vector3 MoveToPosition (Vector3 position)
+	{
+		Vector3 delta = transform.position - position;
+		Vector3 movement = new Vector3(0, 0, 0);
+		float dot = Vector3.Dot (transform.forward, delta);
+		if (Vector3.Angle (-transform.forward, delta) > 2.0f) {
+			if (AngleDir (-transform.forward, delta, Vector3.up) == 1)
+				transform.RotateAround (transform.position, Vector3.up, -1.0f);
+			else
+				transform.RotateAround (transform.position, Vector3.up, 1.0f);
+		}
+
+		movement = forwardSpeed * -transform.forward;
+		transform.position += movement;
+		return delta;
+	}
 
     float AngleDir(Vector3 fwd, Vector3 targetDir, Vector3 up)
     {
@@ -109,5 +145,25 @@ public class CarScript : MonoBehaviour
         }
 
     }
+
+	public void SwitchLanesRight() {
+		currentState = State.SwitchLanesRight;
+		Vector3 a = lanes [currentLaneIndex] [currentNodeIndex].position;
+		Vector3 b = lanes [currentLaneIndex + 1] [currentNodeIndex].position;
+		Vector3 d = b - a;
+		Vector3 s = -transform.forward * 20;
+		Vector3 k = s + d;
+		currentNode = transform.position + k;
+	}
+
+	public void SwitchLanesLeft() {
+		currentState = State.SwitchLanesLeft;
+		Vector3 a = lanes [currentLaneIndex] [currentNodeIndex].position;
+		Vector3 b = lanes [currentLaneIndex - 1] [currentNodeIndex].position;
+		Vector3 d = b - a;
+		Vector3 s = -transform.forward * 20;
+		Vector3 k = s + d;
+		currentNode = transform.position + k;
+	}
 
 }

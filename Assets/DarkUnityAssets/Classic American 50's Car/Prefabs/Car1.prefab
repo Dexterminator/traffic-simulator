@@ -246,11 +246,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63310d0264511374f848dd5dbcbcee86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forwardSpeed: 0
-  maxForwardSpeed: 0
-  backingSpeed: 0
-  maxBackingSpeed: 0
-  pathGroup: {fileID: 0}
+  laneGroups:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
