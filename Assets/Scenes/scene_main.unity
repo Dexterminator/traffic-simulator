@@ -427,6 +427,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afe2c39bdf8cc3142a7e49e0a49c3f03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pathChildren:
+  - {fileID: 335462099}
+  - {fileID: 488598186}
+  - {fileID: 1044210823}
+  - {fileID: 1714240322}
+  - {fileID: 1435758865}
+  - {fileID: 1103160987}
+  - {fileID: 1756213097}
+  path:
+  - {fileID: 488598186}
+  - {fileID: 1044210823}
+  - {fileID: 1714240322}
+  - {fileID: 1435758865}
+  - {fileID: 1103160987}
+  - {fileID: 1756213097}
 --- !u!1 &342563542
 GameObject:
   m_ObjectHideFlags: 0
@@ -501,7 +516,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 6
 --- !u!1 &367992552
 GameObject:
   m_ObjectHideFlags: 0
@@ -600,7 +615,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &601413270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -618,6 +633,7 @@ MonoBehaviour:
   backingSpeed: 0
   maxBackingSpeed: 0
   pathGroup: {fileID: 335462098}
+  path: []
 --- !u!65 &601413271
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1075,7 +1091,7 @@ Transform:
   m_LocalScale: {x: .5, y: .300000012, z: .5}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 0
 --- !u!1 &1188550049
 GameObject:
   m_ObjectHideFlags: 0
@@ -1120,7 +1136,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1206877082
 Transform:
   m_ObjectHideFlags: 0
@@ -1152,6 +1168,7 @@ MonoBehaviour:
   backingSpeed: 0
   maxBackingSpeed: 0
   pathGroup: {fileID: 335462098}
+  path: []
 --- !u!65 &1206877084
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1301,7 +1318,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1303668231
 Transform:
   m_ObjectHideFlags: 0
@@ -1333,6 +1350,7 @@ MonoBehaviour:
   backingSpeed: 0
   maxBackingSpeed: 0
   pathGroup: {fileID: 335462098}
+  path: []
 --- !u!65 &1303668233
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1649,7 +1667,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
 --- !u!1 &1587788771
 GameObject:
   m_ObjectHideFlags: 0
@@ -1735,6 +1753,47 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1303668231}
   m_RootOrder: 0
+--- !u!1 &1712396417
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1712396419}
+  - 114: {fileID: 1712396418}
+  m_Layer: 0
+  m_Name: Simulation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1712396418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1712396417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e09969a3dfd6a47099dea202d4c05e5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  carPrefab: {fileID: 100000, guid: 6cfaf1e01ab594ca8b973d13af7a2842, type: 2}
+  path1Object: {fileID: 1953912981}
+--- !u!4 &1712396419
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1712396417}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -67.3099365, y: 18.1067352, z: -29.2041798}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 15
 --- !u!1 &1714240321
 GameObject:
   m_ObjectHideFlags: 0
@@ -2035,6 +2094,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afe2c39bdf8cc3142a7e49e0a49c3f03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pathChildren:
+  - {fileID: 1953912982}
+  - {fileID: 948390138}
+  - {fileID: 2050619254}
+  - {fileID: 1188550050}
+  - {fileID: 104927247}
+  - {fileID: 1082517398}
+  - {fileID: 367992553}
+  path:
+  - {fileID: 948390138}
+  - {fileID: 2050619254}
+  - {fileID: 1188550050}
+  - {fileID: 104927247}
+  - {fileID: 1082517398}
+  - {fileID: 367992553}
 --- !u!1 &1956921900
 GameObject:
   m_ObjectHideFlags: 0
@@ -2165,7 +2239,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2082883671
 Transform:
   m_ObjectHideFlags: 0
@@ -2197,6 +2271,7 @@ MonoBehaviour:
   backingSpeed: 0
   maxBackingSpeed: 0
   pathGroup: {fileID: 335462098}
+  path: []
 --- !u!65 &2082883673
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -9,7 +9,7 @@ public class CarScript : MonoBehaviour
     public float backingSpeed;
     public float maxBackingSpeed;
     public GameObject pathGroup;
-    private List<Transform> path;
+    public List<Transform> path;
     int currentPathObject;
 	
     // Use this for initialization
@@ -31,6 +31,8 @@ public class CarScript : MonoBehaviour
 	
     void Update()
     {
+		if (currentPathObject == path.Count)
+			Destroy (gameObject);
         CastRays();
         Vector3 movement = new Vector3(0, 0, 0);
         Vector3 delta = transform.position - path [currentPathObject].position;
@@ -40,10 +42,10 @@ public class CarScript : MonoBehaviour
             currentPathObject++;
         } 
 
-        if (currentPathObject > path.Count - 1)
-        {
-            currentPathObject = 0;
-        }
+//        if (currentPathObject > path.Count - 1)
+//        {
+//            currentPathObject = 0;
+//        }
 
         float dot = Vector3.Dot(transform.forward, delta);
 
