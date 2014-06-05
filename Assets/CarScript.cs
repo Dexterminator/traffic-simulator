@@ -35,7 +35,7 @@ public class CarScript : MonoBehaviour
         Vector3 movement = new Vector3(0, 0, 0);
         Vector3 delta = transform.position - path [currentPathObject].position;
 
-        if (delta.magnitude < 12)
+        if (delta.magnitude < 5)
         {
             currentPathObject++;
         } 
@@ -50,9 +50,9 @@ public class CarScript : MonoBehaviour
         if (Vector3.Angle(-transform.forward, delta) > 2.0f)
         {
             if (AngleDir(-transform.forward, delta, Vector3.up) == 1)
-                transform.RotateAround(transform.position, Vector3.up, -2.0f);
+                transform.RotateAround(transform.position, Vector3.up, -3.0f);
             else
-                transform.RotateAround(transform.position, Vector3.up, 2.0f);
+                transform.RotateAround(transform.position, Vector3.up, 3.0f);
         } 
 
         forwardSpeed = 0.2f;
