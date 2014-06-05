@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 public class PathScript : MonoBehaviour
 {
-    Component[] pathChildren;
-    List<Transform> path;
+    public Component[] pathChildren;
+    public List<Transform> path;
 
     void OnDrawGizmos()
     {
