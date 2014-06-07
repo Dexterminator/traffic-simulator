@@ -20,9 +20,7 @@ public class CarScript : MonoBehaviour
 		laneGroups = new List<GameObject> ();
 		lanes = new List<List<Transform>> ();
 		laneChangeSpeed = 10f;
-		forwardSpeed = 0.2f;
         currentNodeIndex = 1; //Because of reasons
-		currentLaneIndex = 0;
 		currentState = State.Normal;
 		laneGroups.Add(GameObject.Find("Lane0"));
 		laneGroups.Add(GameObject.Find("Lane1"));
@@ -40,11 +38,16 @@ public class CarScript : MonoBehaviour
 		currentNode = lanes [currentLaneIndex] [currentNodeIndex].position;
     }
 
+	public void Init(int lane, float speed)
+	{
+		currentLaneIndex = lane;
+		forwardSpeed = speed;
+	}
+
     void Update()
     {
 		List<Transform> lane = lanes [currentLaneIndex];
-		if (currentNodeIndex == lane.Count)
-			Destroy (gameObject);
+
 //        CastRays();
 //		Debug.Log (State.SwitchLanesRight);
 
@@ -56,7 +59,10 @@ public class CarScript : MonoBehaviour
 		case State.Normal:
 			if (delta.magnitude < 5) {
 				currentNodeIndex++;
-				currentNode = lane [currentNodeIndex].position;
+				if (currentNodeIndex == lane.Count)
+					Destroy (gameObject);
+				else
+					currentNode = lane [currentNodeIndex].position;
 			}
 			break;
 		case State.SwitchLanesRight:
