@@ -19,9 +19,9 @@ public class SimulationScript : MonoBehaviour {
 	float[] laneTimers;
 	float spawnTime;
 
-	const float INTENSITY = 1.0f;
-	const float SPAWNING_OFFSET = 0.3f;
-	const float AVG_SPEED = 0.5f;
+	readonly float[] INTENSITY = new float[4] {8.1f, 4.1f, 4.1f, 4.1f};
+	readonly float[] SPAWNING_OFFSET = new float[4] {0.2f, 0.2f, 0.2f, 0.2f};
+	readonly float[] AVG_SPEED = new float[4] {1.0f, 0.9f, 0.7f, 0.5f};
 
 	// Use this for initialization
 	void Start () {
@@ -30,7 +30,7 @@ public class SimulationScript : MonoBehaviour {
 		laneTimers = new float[4];
 		laneSpawnTimes = new float[4];
 		for (int i = 0; i < laneTimers.Length; i++)
-			laneSpawnTimes[i] = ExponentialTime ();
+			laneSpawnTimes[i] = ExponentialTime (INTENSITY[i]);
 		PathScript pathScript = (PathScript) path0Object.gameObject.GetComponent ("PathScript");
 		path0 = pathScript.path;
 		pathScript = (PathScript) path1Object.gameObject.GetComponent ("PathScript");
@@ -57,16 +57,16 @@ public class SimulationScript : MonoBehaviour {
 			GenerateCar (1);
 		}
 
-		CarPoissonProcess (INTENSITY);
+		CarPoissonProcess ();
 	}
 
-	static float ExponentialTime ()
+	static float ExponentialTime (float intensity)
 	{
-		return SPAWNING_OFFSET + Mathf.Log (1 - Random.value) / (-INTENSITY);
-		//return 0.3f;
+		return Mathf.Log (1 - Random.value) / (-intensity);
+		//return SPAWNING_OFFSET;
 	}
 
-	void CarPoissonProcess (float intensity) 
+	void CarPoissonProcess () 
 	{
 		for (int i = 0; i < laneTimers.Length; i++)
 		{
@@ -77,11 +77,9 @@ public class SimulationScript : MonoBehaviour {
 					Debug.Log ("Generating car at: " + laneTimers[0]);
 				GenerateCar (i);
 				laneTimers[i] -= laneSpawnTimes[i];
-				laneSpawnTimes [i] = ExponentialTime ();
+				laneSpawnTimes [i] = SPAWNING_OFFSET[i] + ExponentialTime (INTENSITY[i]);
 
 			}
-			//if (laneSpawnTimes[0] < 1.0f)
-			//	Debug.Log ("i=" + 0 + ":  " + laneSpawnTimes[i]);
 		}
 	}
 
@@ -106,7 +104,7 @@ public class SimulationScript : MonoBehaviour {
 		//Debug.Log ("lolfi");
 		GameObject carInstance;
 		carInstance = Instantiate (carPrefab, path [0].transform.position, carPrefab.transform.rotation) as GameObject;
-		((CarScript) carInstance.gameObject.GetComponent("CarScript")).Init (lane, AVG_SPEED);
+		((CarScript) carInstance.gameObject.GetComponent("CarScript")).Init (lane, AVG_SPEED[lane]);
 		currentCar = carInstance;
 	}
 	//			CarScript carScript = ((CarScript) carInstance.gameObject.GetComponent("CarScript"));

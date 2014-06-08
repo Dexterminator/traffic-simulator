@@ -48,8 +48,7 @@ public class CarScript : MonoBehaviour
     {
 		List<Transform> lane = lanes [currentLaneIndex];
 
-//        CastRays();
-//		Debug.Log (State.SwitchLanesRight);
+        CastRays();
 
 		Debug.DrawLine (transform.position, currentNode);
 		Vector3 delta = MoveToPosition (currentNode);
@@ -128,25 +127,25 @@ public class CarScript : MonoBehaviour
         Vector3 heightBoost = new Vector3(0, 0.7f, 0);
         if (Physics.Raycast(transform.position + heightBoost, -transform.forward, out hit, 100.0f))
         {
-            Debug.Log("Hit something in front of car");
+            //Debug.Log("Hit something in front of car");
             Debug.DrawLine(transform.position, hit.point, Color.white);
         }
 
         if (Physics.Raycast(transform.position, transform.right, out hit, 100.0f))
         {
-            Debug.Log("Hit something to the left of the car");
+            //Debug.Log("Hit something to the left of the car");
             Debug.DrawLine(transform.position, hit.point, Color.red);
         }
 
         if (Physics.Raycast(transform.position, -transform.right, out hit, 100.0f))
         {
-            Debug.Log("Hit something to the right of the car");
+            //Debug.Log("Hit something to the right of the car");
             Debug.DrawLine(transform.position, hit.point, Color.blue);
         }
 
         if (Physics.Raycast(transform.position + heightBoost, transform.forward, out hit, 100.0f))
         {
-            Debug.Log("Hit something behind the car");
+            //Debug.Log("Hit something behind the car");
             Debug.DrawLine(transform.position, hit.point, Color.yellow);
         }
 
