@@ -21,10 +21,14 @@ public class CarScript : MonoBehaviour
 
 	float distance;
 	float oldDistance;
+	ZoneScript leftZone;
+	bool leftSafe;
 	
     // Use this for initialization
     void Start()
     {
+		leftZone = (ZoneScript) (transform.Find ("LeftZone").GetComponent("ZoneScript"));
+		leftSafe = true;
 		distance = float.MaxValue; 
 		oldDistance = float.MaxValue;
 		laneGroups = new List<GameObject> ();
@@ -57,6 +61,7 @@ public class CarScript : MonoBehaviour
 
     void Update()
     {
+		leftSafe = leftZone.safe;
 		List<Transform> lane = lanes [currentLaneIndex];
 
         CastRays();
