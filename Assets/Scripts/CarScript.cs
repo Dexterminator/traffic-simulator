@@ -77,7 +77,7 @@ public class CarScript : MonoBehaviour
 		}
 		oldDistance = distance;
 
-		MaybeBreak();
+		//MaybeBreak();
 
 		Debug.DrawLine (transform.position, currentNode);
 		Vector3 delta = transform.position;
@@ -174,7 +174,7 @@ public class CarScript : MonoBehaviour
             //Debug.Log("Hit something in front of car");
             Debug.DrawLine(transform.position, hit.point, Color.red);
 			distance = hit.distance;
-			if (FreeLeftLane() && currentState == State.Normal) {
+			if (leftSafe && currentState == State.Normal) {
 				SwitchLanesLeft();
 			}
         } else {
@@ -199,11 +199,6 @@ public class CarScript : MonoBehaviour
             Debug.DrawLine(transform.position, hit.point, Color.yellow);
         }*/
 
-    }
-
-    bool FreeLeftLane() {
-    	//TODO
-    	return true;
     }
 
 	public void SwitchLanesRight() {
