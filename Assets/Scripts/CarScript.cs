@@ -22,11 +22,15 @@ public class CarScript : MonoBehaviour
 
 	float distance;
 	float oldDistance;
+	ZoneScript leftZone;
+	bool leftSafe;
 	
     // Use this for initialization
     void Start()
     {
 		broken = false;
+		leftZone = (ZoneScript) (transform.Find ("LeftZone").GetComponent("ZoneScript"));
+		leftSafe = true;
 		distance = float.MaxValue; 
 		oldDistance = float.MaxValue;
 		laneGroups = new List<GameObject> ();
@@ -61,7 +65,7 @@ public class CarScript : MonoBehaviour
     {
 		//float lockPos = -180;
 		transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
-
+		leftSafe = leftZone.safe;
 		List<Transform> lane = lanes [currentLaneIndex];
 
         CastRays();

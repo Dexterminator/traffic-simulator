@@ -19,7 +19,7 @@ public class SimulationScript : MonoBehaviour {
 	float[] laneTimers;
 	float spawnTime;
 
-	readonly float[] INTENSITY = new float[4] {2f, 2f, 2f, 2f};
+	readonly float[] INTENSITY = new float[4] {0f, 0f, 3.0f, 0.1f};
 	readonly float[] SPAWNING_OFFSET = new float[4] {0.5f, 0.5f, 0.5f, 0.5f};
 	readonly float[] AVG_SPEED = new float[4] {1.0f, 0.9f, 0.7f, 0.5f};
 
