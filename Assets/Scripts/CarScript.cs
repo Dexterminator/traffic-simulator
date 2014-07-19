@@ -14,6 +14,7 @@ public class CarScript : MonoBehaviour
 	Vector3 currentNode;
 	float optimalSpeed;
 	float forwardSpeed;
+	bool broken;
 
 	float CONSTANT_ACCELERATION = 0.005f;
 	float PERCENTUAL_ACCELERATION = 0.1f;
@@ -25,6 +26,7 @@ public class CarScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+		broken = false;
 		distance = float.MaxValue; 
 		oldDistance = float.MaxValue;
 		laneGroups = new List<GameObject> ();
@@ -57,6 +59,9 @@ public class CarScript : MonoBehaviour
 
     void Update()
     {
+		//float lockPos = -180;
+		transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+
 		List<Transform> lane = lanes [currentLaneIndex];
 
         CastRays();
@@ -68,8 +73,13 @@ public class CarScript : MonoBehaviour
 		}
 		oldDistance = distance;
 
+		MaybeBreak();
+
 		Debug.DrawLine (transform.position, currentNode);
-		Vector3 delta = MoveToPosition (currentNode);
+		Vector3 delta = transform.position;
+		if (!broken) {
+			delta = MoveToPosition (currentNode);
+		};
 
 		switch (currentState)
 		{
@@ -105,19 +115,31 @@ public class CarScript : MonoBehaviour
 
     }
 
+	void MaybeBreak() {
+		if( Random.value < 0.0001f) {
+			broken = true;
+			forwardSpeed = 0;
+			foreach (Transform child in transform) {
+				child.gameObject.SetActive(true);
+			}
+		}
+	}
+
 	Vector3 MoveToPosition (Vector3 position)
 	{
 		Vector3 delta = transform.position - position;
 		Vector3 movement = new Vector3(0, 0, 0);
-		float dot = Vector3.Dot (transform.forward, delta);
-		if (Vector3.Angle (-transform.forward, delta) > 2.0f) {
-			if (AngleDir (-transform.forward, delta, Vector3.up) == 1)
+		Vector3 xzdir = transform.forward;
+		xzdir.y = 0;
+		float dot = Vector3.Dot (xzdir, delta);
+		if (Vector3.Angle (-xzdir, delta) > 2.0f) {
+			if (AngleDir (-xzdir, delta, Vector3.up) == 1)
 				transform.RotateAround (transform.position, Vector3.up, -1.0f);
 			else
 				transform.RotateAround (transform.position, Vector3.up, 1.0f);
 		}
 
-		movement = forwardSpeed * -transform.forward;
+		movement = forwardSpeed * -xzdir;
 		transform.position += movement;
 		return delta;
 	}
