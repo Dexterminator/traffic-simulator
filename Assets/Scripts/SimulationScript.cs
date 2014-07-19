@@ -19,14 +19,17 @@ public class SimulationScript : MonoBehaviour {
 	float[] laneTimers;
 	float spawnTime;
 
-	readonly float[] INTENSITY = new float[4] {0f, 0f, 2f, 2f};
-	readonly float[] SPAWNING_OFFSET = new float[4] {0.5f, 0.5f, 0.5f, 0.5f};
-	readonly float[] AVG_SPEED = new float[4] {1.0f, 0.9f, 0.7f, 0.5f};
+	float SPEED = 0.5f;
 
-	float NORM_DEV = 0.08f;
+	readonly float[] INTENSITY = new float[4] {0f, 0f, 0f, 7f};
+	readonly float[] SPAWNING_OFFSET = new float[4] {0.5f, 0.5f, 0.5f, 0.5f};
+	readonly float[] AVG_SPEED = new float[4] {0.5f, 0.5f, 0.5f, 0.5f};
+
+	float NORM_DEV = 0.12f;
 
 	// Use this for initialization
 	void Start () {
+
 
 		//laneTimers = new List<float> (4);
 		laneTimers = new float[4];
@@ -41,6 +44,8 @@ public class SimulationScript : MonoBehaviour {
 		path2 = pathScript.path;
 		pathScript = (PathScript) path3Object.gameObject.GetComponent ("PathScript");
 		path3 = pathScript.path;
+
+
 	}
 	
 	// Update is called once per frame
@@ -56,7 +61,9 @@ public class SimulationScript : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown (KeyCode.Space)) {
-			GenerateCar (1);
+			Vector3 accidentPosition = new Vector3(-70,0.6393032f,198);
+			GameObject carInstance = Instantiate (carPrefab, accidentPosition, carPrefab.transform.rotation) as GameObject;
+			((CarScript) carInstance.gameObject.GetComponent("CarScript")).Init (0, 0, true);
 		}
 
 		CarPoissonProcess ();
@@ -76,8 +83,6 @@ public class SimulationScript : MonoBehaviour {
 				laneTimers[i] += Time.deltaTime;
 				if (laneTimers[i] > laneSpawnTimes[i])
 				{	
-					if (i == 0)
-						Debug.Log ("Generating car at: " + laneTimers[0]);
 					GenerateCar (i);
 					laneTimers[i] -= laneSpawnTimes[i];
 					laneSpawnTimes [i] = SPAWNING_OFFSET[i] + ExponentialTime (INTENSITY[i]);
@@ -108,7 +113,7 @@ public class SimulationScript : MonoBehaviour {
 		//Debug.Log ("lolfi");
 		//GameObject carInstance;
 		GameObject carInstance = Instantiate (carPrefab, path [0].transform.position, carPrefab.transform.rotation) as GameObject;
-		((CarScript) carInstance.gameObject.GetComponent("CarScript")).Init (lane, NormDist(AVG_SPEED[lane], NORM_DEV));
+		((CarScript) carInstance.gameObject.GetComponent("CarScript")).Init (lane, NormDist(AVG_SPEED[lane], NORM_DEV), false);
 		currentCar = carInstance;
 	}
 	//			CarScript carScript = ((CarScript) carInstance.gameObject.GetComponent("CarScript"));

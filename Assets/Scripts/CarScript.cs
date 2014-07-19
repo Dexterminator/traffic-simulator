@@ -24,13 +24,19 @@ public class CarScript : MonoBehaviour
 	float oldDistance;
 	ZoneScript leftZone;
 	bool leftSafe;
+	ZoneScript rightZone;
+	bool rightSafe;
+	ZoneScript forwardZone;
+	bool forwardSafe;
 	
     // Use this for initialization
     void Start()
     {
-		broken = false;
+		//broken = false;
 		leftZone = (ZoneScript) (transform.Find ("LeftZone").GetComponent("ZoneScript"));
 		leftSafe = true;
+		rightZone = (ZoneScript) (transform.Find ("RightZone").GetComponent("ZoneScript"));
+		rightSafe = true;
 		distance = float.MaxValue; 
 		oldDistance = float.MaxValue;
 		laneGroups = new List<GameObject> ();
@@ -54,8 +60,12 @@ public class CarScript : MonoBehaviour
 		currentNode = lanes [currentLaneIndex] [currentNodeIndex].position;
     }
 
-	public void Init(int lane, float speed)
+	public void Init(int lane, float speed, bool b)
 	{
+		broken = b;
+		Debug.Log(b);
+		if (broken)
+			Break();
 		currentLaneIndex = lane;
 		optimalSpeed = speed;
 		forwardSpeed = optimalSpeed;
@@ -66,6 +76,7 @@ public class CarScript : MonoBehaviour
 		//float lockPos = -180;
 		transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
 		leftSafe = leftZone.safe;
+		rightSafe = rightZone.safe;
 		List<Transform> lane = lanes [currentLaneIndex];
 
         CastRays();
@@ -77,7 +88,6 @@ public class CarScript : MonoBehaviour
 		}
 		oldDistance = distance;
 
-		//MaybeBreak();
 
 		Debug.DrawLine (transform.position, currentNode);
 		Vector3 delta = transform.position;
@@ -101,6 +111,7 @@ public class CarScript : MonoBehaviour
 				currentLaneIndex++;
 				currentNode = lanes [currentLaneIndex] [currentNodeIndex].position;
 				currentState = State.Normal;
+				transform.forward = -(currentNode - transform.position).normalized;
 			}
 			break;
 		case State.SwitchLanesLeft:
@@ -108,6 +119,7 @@ public class CarScript : MonoBehaviour
 				currentLaneIndex--;
 				currentNode = lanes [currentLaneIndex] [currentNodeIndex].position;
 				currentState = State.Normal;
+				transform.forward = -(currentNode - transform.position).normalized;
 			}
 			break;
 		default:
@@ -119,13 +131,9 @@ public class CarScript : MonoBehaviour
 
     }
 
-	void MaybeBreak() {
-		if( Random.value < 0.0001f) {
-			broken = true;
-			forwardSpeed = 0;
-			foreach (Transform child in transform) {
-				child.gameObject.SetActive(true);
-			}
+	void Break() {
+		foreach (Transform child in transform) {
+			child.gameObject.SetActive(true);
 		}
 	}
 
@@ -137,10 +145,14 @@ public class CarScript : MonoBehaviour
 		xzdir.y = 0;
 		float dot = Vector3.Dot (xzdir, delta);
 		if (Vector3.Angle (-xzdir, delta) > 2.0f) {
+			float rotationSpeed = 2.0f;
+			if (currentState == State.Normal) {
+				rotationSpeed = 1.0f;
+			}
 			if (AngleDir (-xzdir, delta, Vector3.up) == 1)
-				transform.RotateAround (transform.position, Vector3.up, -1.0f);
+				transform.RotateAround (transform.position, Vector3.up, -rotationSpeed);
 			else
-				transform.RotateAround (transform.position, Vector3.up, 1.0f);
+				transform.RotateAround (transform.position, Vector3.up, rotationSpeed);
 		}
 
 		movement = forwardSpeed * -xzdir;
@@ -174,13 +186,17 @@ public class CarScript : MonoBehaviour
             //Debug.Log("Hit something in front of car");
             Debug.DrawLine(transform.position, hit.point, Color.red);
 			distance = hit.distance;
-			if (leftSafe && currentState == State.Normal) {
+			if (leftSafe && currentState == State.Normal && currentLaneIndex > 0) {
 				SwitchLanesLeft();
 			}
         } else {
 			distance = float.MaxValue;
 		}
 
+		if (rightSafe && currentState == State.Normal && currentLaneIndex < lanes.Count - 1) {
+			SwitchLanesRight();
+		}
+		
         /*if (Physics.Raycast(transform.position, transform.right, out hit, 100.0f))
         {
             //Debug.Log("Hit something to the left of the car");
@@ -206,7 +222,8 @@ public class CarScript : MonoBehaviour
 		Vector3 a = lanes [currentLaneIndex] [currentNodeIndex].position;
 		Vector3 b = lanes [currentLaneIndex + 1] [currentNodeIndex].position;
 		Vector3 d = b - a;
-		Vector3 s = -transform.forward * 20;
+		Vector3 t = lanes [currentLaneIndex] [currentNodeIndex].position - lanes [currentLaneIndex] [currentNodeIndex-1].position;
+		Vector3 s = t.normalized * 20;
 		Vector3 k = s + d;
 		currentNode = transform.position + k;
 	}
@@ -216,7 +233,8 @@ public class CarScript : MonoBehaviour
 		Vector3 a = lanes [currentLaneIndex] [currentNodeIndex].position;
 		Vector3 b = lanes [currentLaneIndex - 1] [currentNodeIndex].position;
 		Vector3 d = b - a;
-		Vector3 s = -transform.forward * 20;
+		Vector3 t = lanes [currentLaneIndex] [currentNodeIndex].position - lanes [currentLaneIndex] [currentNodeIndex-1].position;
+		Vector3 s = t.normalized * 20;
 		Vector3 k = s + d;
 		currentNode = transform.position + k;
 	}

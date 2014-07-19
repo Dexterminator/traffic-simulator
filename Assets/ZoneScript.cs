@@ -13,7 +13,7 @@ public class ZoneScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Debug.Log (carsInside);
+		//Debug.Log (carsInside);
 	}
 
 	void OnTriggerEnter(Collider other) {
