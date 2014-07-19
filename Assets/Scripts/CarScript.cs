@@ -12,11 +12,21 @@ public class CarScript : MonoBehaviour
 	enum State {Normal, SwitchLanesRight, SwitchLanesLeft};
 	private State currentState;
 	Vector3 currentNode;
+	float optimalSpeed;
 	float forwardSpeed;
+
+	float CONSTANT_ACCELERATION = 0.005f;
+	float PERCENTUAL_ACCELERATION = 0.1f;
+	float NOTICE_DISTANCE = 15f;
+
+	float distance;
+	float oldDistance;
 	
     // Use this for initialization
     void Start()
     {
+		distance = float.MaxValue; 
+		oldDistance = float.MaxValue;
 		laneGroups = new List<GameObject> ();
 		lanes = new List<List<Transform>> ();
 		laneChangeSpeed = 10f;
@@ -41,7 +51,8 @@ public class CarScript : MonoBehaviour
 	public void Init(int lane, float speed)
 	{
 		currentLaneIndex = lane;
-		forwardSpeed = speed;
+		optimalSpeed = speed;
+		forwardSpeed = optimalSpeed;
 	}
 
     void Update()
@@ -49,6 +60,13 @@ public class CarScript : MonoBehaviour
 		List<Transform> lane = lanes [currentLaneIndex];
 
         CastRays();
+
+		if (oldDistance > distance) {
+			forwardSpeed = forwardSpeed*(1.0f - PERCENTUAL_ACCELERATION) - CONSTANT_ACCELERATION;
+		} else if (forwardSpeed < optimalSpeed) {
+			forwardSpeed = forwardSpeed*(1.0f + PERCENTUAL_ACCELERATION) + CONSTANT_ACCELERATION;
+		}
+		oldDistance = distance;
 
 		Debug.DrawLine (transform.position, currentNode);
 		Vector3 delta = MoveToPosition (currentNode);
@@ -125,13 +143,16 @@ public class CarScript : MonoBehaviour
     {
         RaycastHit hit;
         Vector3 heightBoost = new Vector3(0, 0.7f, 0);
-        if (Physics.Raycast(transform.position + heightBoost, -transform.forward, out hit, 100.0f))
+        if (Physics.Raycast(transform.position + heightBoost, -transform.forward, out hit, NOTICE_DISTANCE))
         {
             //Debug.Log("Hit something in front of car");
-            Debug.DrawLine(transform.position, hit.point, Color.white);
-        }
+            Debug.DrawLine(transform.position, hit.point, Color.red);
+			distance = hit.distance;
+        } else {
+			distance = float.MaxValue;
+		}
 
-        if (Physics.Raycast(transform.position, transform.right, out hit, 100.0f))
+        /*if (Physics.Raycast(transform.position, transform.right, out hit, 100.0f))
         {
             //Debug.Log("Hit something to the left of the car");
             Debug.DrawLine(transform.position, hit.point, Color.red);
@@ -147,7 +168,7 @@ public class CarScript : MonoBehaviour
         {
             //Debug.Log("Hit something behind the car");
             Debug.DrawLine(transform.position, hit.point, Color.yellow);
-        }
+        }*/
 
     }
 

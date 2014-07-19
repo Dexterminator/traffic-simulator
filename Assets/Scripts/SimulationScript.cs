@@ -19,11 +19,11 @@ public class SimulationScript : MonoBehaviour {
 	float[] laneTimers;
 	float spawnTime;
 
-	readonly float[] INTENSITY = new float[4] {0f, 0f, 0f, 4.1f};
-	readonly float[] SPAWNING_OFFSET = new float[4] {0.2f, 0.2f, 0.2f, 1.5f};
+	readonly float[] INTENSITY = new float[4] {2f, 2f, 2f, 2f};
+	readonly float[] SPAWNING_OFFSET = new float[4] {0.5f, 0.5f, 0.5f, 0.5f};
 	readonly float[] AVG_SPEED = new float[4] {1.0f, 0.9f, 0.7f, 0.5f};
 
-	float NORM_DEV = 0.15f;
+	float NORM_DEV = 0.08f;
 
 	// Use this for initialization
 	void Start () {
@@ -108,12 +108,12 @@ public class SimulationScript : MonoBehaviour {
 		//Debug.Log ("lolfi");
 		//GameObject carInstance;
 		GameObject carInstance = Instantiate (carPrefab, path [0].transform.position, carPrefab.transform.rotation) as GameObject;
-		((CarScript) carInstance.gameObject.GetComponent("CarScript")).Init (lane, normDist(AVG_SPEED[lane], NORM_DEV));
+		((CarScript) carInstance.gameObject.GetComponent("CarScript")).Init (lane, NormDist(AVG_SPEED[lane], NORM_DEV));
 		currentCar = carInstance;
 	}
 	//			CarScript carScript = ((CarScript) carInstance.gameObject.GetComponent("CarScript"));
 
-	float normDist(float mean, float stdDev)
+	float NormDist(float mean, float stdDev)
 	{
 		Random rand = new Random();
 		float u1 = Random.value;
