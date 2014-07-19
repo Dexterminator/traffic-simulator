@@ -148,6 +148,9 @@ public class CarScript : MonoBehaviour
             //Debug.Log("Hit something in front of car");
             Debug.DrawLine(transform.position, hit.point, Color.red);
 			distance = hit.distance;
+			if (FreeLeftLane() && currentState == State.Normal) {
+				SwitchLanesLeft();
+			}
         } else {
 			distance = float.MaxValue;
 		}
@@ -170,6 +173,11 @@ public class CarScript : MonoBehaviour
             Debug.DrawLine(transform.position, hit.point, Color.yellow);
         }*/
 
+    }
+
+    bool FreeLeftLane() {
+    	//TODO
+    	return true;
     }
 
 	public void SwitchLanesRight() {
