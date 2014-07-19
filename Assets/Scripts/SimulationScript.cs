@@ -19,9 +19,11 @@ public class SimulationScript : MonoBehaviour {
 	float[] laneTimers;
 	float spawnTime;
 
-	readonly float[] INTENSITY = new float[4] {8.1f, 4.1f, 4.1f, 4.1f};
-	readonly float[] SPAWNING_OFFSET = new float[4] {0.2f, 0.2f, 0.2f, 0.2f};
+	readonly float[] INTENSITY = new float[4] {0f, 0f, 0f, 4.1f};
+	readonly float[] SPAWNING_OFFSET = new float[4] {0.2f, 0.2f, 0.2f, 1.5f};
 	readonly float[] AVG_SPEED = new float[4] {1.0f, 0.9f, 0.7f, 0.5f};
+
+	float NORM_DEV = 0.15f;
 
 	// Use this for initialization
 	void Start () {
@@ -70,15 +72,17 @@ public class SimulationScript : MonoBehaviour {
 	{
 		for (int i = 0; i < laneTimers.Length; i++)
 		{
-			laneTimers[i] += Time.deltaTime;
-			if (laneTimers[i] > laneSpawnTimes[i])
-			{	
-				if (i == 0)
-					Debug.Log ("Generating car at: " + laneTimers[0]);
-				GenerateCar (i);
-				laneTimers[i] -= laneSpawnTimes[i];
-				laneSpawnTimes [i] = SPAWNING_OFFSET[i] + ExponentialTime (INTENSITY[i]);
-
+			if (AVG_SPEED[i] > 0) {
+				laneTimers[i] += Time.deltaTime;
+				if (laneTimers[i] > laneSpawnTimes[i])
+				{	
+					if (i == 0)
+						Debug.Log ("Generating car at: " + laneTimers[0]);
+					GenerateCar (i);
+					laneTimers[i] -= laneSpawnTimes[i];
+					laneSpawnTimes [i] = SPAWNING_OFFSET[i] + ExponentialTime (INTENSITY[i]);
+				}
+				
 			}
 		}
 	}
@@ -102,10 +106,20 @@ public class SimulationScript : MonoBehaviour {
 		}
 
 		//Debug.Log ("lolfi");
-		GameObject carInstance;
-		carInstance = Instantiate (carPrefab, path [0].transform.position, carPrefab.transform.rotation) as GameObject;
-		((CarScript) carInstance.gameObject.GetComponent("CarScript")).Init (lane, AVG_SPEED[lane]);
+		//GameObject carInstance;
+		GameObject carInstance = Instantiate (carPrefab, path [0].transform.position, carPrefab.transform.rotation) as GameObject;
+		((CarScript) carInstance.gameObject.GetComponent("CarScript")).Init (lane, normDist(AVG_SPEED[lane], NORM_DEV));
 		currentCar = carInstance;
 	}
 	//			CarScript carScript = ((CarScript) carInstance.gameObject.GetComponent("CarScript"));
+
+	float normDist(float mean, float stdDev)
+	{
+		Random rand = new Random();
+		float u1 = Random.value;
+		float u2 = Random.value;
+		float randStdNormal = Mathf.Sqrt(-2f * Mathf.Log(u1)) * Mathf.Sin(2f * Mathf.PI * u2);
+		float randNormal = mean + stdDev * randStdNormal;
+		return randNormal;
+	}
 }
