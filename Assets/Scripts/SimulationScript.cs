@@ -22,10 +22,10 @@ public class SimulationScript : MonoBehaviour {
 	float SPEED = 0.5f;
 
 	readonly float[] INTENSITY = new float[4] {0f, 0f, 0f, 7f};
-	readonly float[] SPAWNING_OFFSET = new float[4] {0.5f, 0.5f, 0.5f, 0.5f};
-	readonly float[] AVG_SPEED = new float[4] {0.5f, 0.5f, 0.5f, 0.5f};
+	readonly float[] SPAWNING_OFFSET = new float[4] {0.5f, 0.5f, 0.5f, 0.3f};
+	readonly float[] AVG_SPEED = new float[4] {0.5f, 0.5f, 0.5f, 0.4f};
 
-	float NORM_DEV = 0.12f;
+	float NORM_DEV = 0.06f;
 
 	// Use this for initialization
 	void Start () {

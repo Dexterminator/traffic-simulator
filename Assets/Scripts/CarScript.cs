@@ -16,8 +16,8 @@ public class CarScript : MonoBehaviour
 	float forwardSpeed;
 	bool broken;
 
-	float CONSTANT_ACCELERATION = 0.005f;
-	float PERCENTUAL_ACCELERATION = 0.1f;
+	float CONSTANT_ACCELERATION = 0.01f;
+	float PERCENTUAL_ACCELERATION = 0.02f;
 	float NOTICE_DISTANCE = 15f;
 
 	float distance;
@@ -81,7 +81,7 @@ public class CarScript : MonoBehaviour
 
         CastRays();
 
-		if (oldDistance > distance) {
+		if (oldDistance > distance || forwardSpeed > optimalSpeed) {
 			forwardSpeed = forwardSpeed*(1.0f - PERCENTUAL_ACCELERATION) - CONSTANT_ACCELERATION;
 		} else if (forwardSpeed < optimalSpeed) {
 			forwardSpeed = forwardSpeed*(1.0f + PERCENTUAL_ACCELERATION) + CONSTANT_ACCELERATION;
