@@ -61,7 +61,7 @@ public class SimulationScript : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown (KeyCode.Space)) {
-			Vector3 accidentPosition = new Vector3(-70,0.6393032f,198);
+			Vector3 accidentPosition = new Vector3(-56,0.6393032f,198);
 			GameObject carInstance = Instantiate (carPrefab, accidentPosition, carPrefab.transform.rotation) as GameObject;
 			((CarScript) carInstance.gameObject.GetComponent("CarScript")).Init (0, 0, true);
 		}

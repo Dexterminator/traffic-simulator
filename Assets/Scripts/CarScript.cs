@@ -13,8 +13,9 @@ public class CarScript : MonoBehaviour
 	private State currentState;
 	Vector3 currentNode;
 	float optimalSpeed;
+	float accidentSpeed;
 	float forwardSpeed;
-	bool broken;
+	public bool broken;
 
 	float CONSTANT_ACCELERATION = 0.01f;
 	float PERCENTUAL_ACCELERATION = 0.02f;
@@ -28,6 +29,8 @@ public class CarScript : MonoBehaviour
 	bool rightSafe;
 	ZoneScript forwardZone;
 	bool forwardSafe;
+	AccidentZoneScript accidentZone;
+	bool noAccidentClose;
 	
     // Use this for initialization
     void Start()
@@ -37,6 +40,10 @@ public class CarScript : MonoBehaviour
 		leftSafe = true;
 		rightZone = (ZoneScript) (transform.Find ("RightZone").GetComponent("ZoneScript"));
 		rightSafe = true;
+
+		accidentZone = (AccidentZoneScript) (transform.Find ("AccidentZone").GetComponent("AccidentZoneScript"));
+		noAccidentClose = true;
+
 		distance = float.MaxValue; 
 		oldDistance = float.MaxValue;
 		laneGroups = new List<GameObject> ();
@@ -63,12 +70,12 @@ public class CarScript : MonoBehaviour
 	public void Init(int lane, float speed, bool b)
 	{
 		broken = b;
-		Debug.Log(b);
 		if (broken)
 			Break();
 		currentLaneIndex = lane;
 		optimalSpeed = speed;
 		forwardSpeed = optimalSpeed;
+		accidentSpeed = optimalSpeed/2;
 	}
 
     void Update()
@@ -77,15 +84,28 @@ public class CarScript : MonoBehaviour
 		transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
 		leftSafe = leftZone.safe;
 		rightSafe = rightZone.safe;
+		noAccidentClose = accidentZone.safe;
 		List<Transform> lane = lanes [currentLaneIndex];
 
         CastRays();
 
-		if (oldDistance > distance || forwardSpeed > optimalSpeed) {
+		float curOpSpeed;
+		if(noAccidentClose) {
+			curOpSpeed = optimalSpeed;
+		} else {
+			curOpSpeed = accidentSpeed;
+		}
+
+		if (oldDistance > distance || forwardSpeed > curOpSpeed) {
 			forwardSpeed = forwardSpeed*(1.0f - PERCENTUAL_ACCELERATION) - CONSTANT_ACCELERATION;
-		} else if (forwardSpeed < optimalSpeed) {
+		} else if (forwardSpeed < curOpSpeed) {
 			forwardSpeed = forwardSpeed*(1.0f + PERCENTUAL_ACCELERATION) + CONSTANT_ACCELERATION;
 		}
+
+		if (forwardSpeed < 0) {
+			forwardSpeed = 0;
+		}
+
 		oldDistance = distance;
 
 
